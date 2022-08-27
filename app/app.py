@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import discord
 from app.util.yomiage import play_process, read_message
@@ -25,20 +24,22 @@ async def on_ready():
     # 起動時の処理
     print('Bot is wake up.')
 
+
 @client.command()
 async def bye():
     await client.close()
 
 @client.event
 async def on_message(message):
-    #メッセージを受け取った時に、読み取れる形にして
     yomiage.volume = 0.5
+    #ここボリューム上で定義してるからいらなくね？
     if yomiage.voice and yomiage.volume is None:
         source = discord.PCMVolumeTransformer(yomiage.voice.source)
         yomiage.volume = source.volume
 
     if not message.author.bot and message.channel == yomiage.currentChannel :
         read_message(message,yomiage.currentChannel)
+    await client.process_commands(message)
         
 @client.event
 async def on_voice_state_update(
